@@ -1,0 +1,76 @@
+# 4k 应用监控指标
+
+# Rule name。在告警信息中显示的唯一名称。必须以_rule结尾。
+# Metrics name。 也是oal脚本中的度量名。只支持long,double和int类型。详情见 所有可能的度量名称列表.
+# Include names。其下的实体名称都在此规则中。比如服务名，终端名。
+# Threshold。阈值。
+# OP。 操作符, 支持 >, <, =。欢迎贡献所有的操作符。
+# Period.。多久告警规则需要被核实一下。这是一个时间窗口，与后端部署环境时间相匹配。
+# Count。 在一个Period窗口中，如果values超过Threshold值（按op），达到Count值，需要发送警报。
+# Silence period。在时间N中触发报警后，在TN -> TN + period这个阶段不告警。 默认情况下，它和Period一样，这意味着相同的告警（在同一个Metrics name拥有相同的Id）在同一个Period内只会触发一次。
+
+rules:
+  # 服务可用性
+  service_sla_rule:
+    metrics-name: service_sla
+    op: "<"
+    threshold: 9000
+    period: 10
+    count: 2
+    silence-period: 10
+    message: 服务【{name}】在过去10分钟内有超过2分钟的时间，可用性低于90%
+  # 端点可用性
+  endpoint_sla_rule:
+    metrics-name: endpoint_sla
+    op: "<"
+    threshold: 7000
+    period: 10
+    count: 2
+    silence-period: 10
+    message: 端点【{name}】在过去10分钟内有超过2分钟的时间，可用性低于70%
+  # 端点平均响应时间
+  endpoint_avg_rule:
+    metrics-name: endpoint_avg
+    op: ">"
+    threshold: 6000
+    period: 10
+    count: 2
+    silence-period: 10
+    message: 端点【{name}】在过去10分钟内有超过2分钟的时间，平均响应时间大于6000ms
+  # 端点分钟请求次数
+  endpoint_cpm_low_rule:
+    metrics-name: endpoint_cpm
+    op: ">"
+    threshold: 200
+    period: 10
+    count: 2
+    silence-period: 10
+    message: 端点【{name}】在过去10分钟内有超过2分钟的时间，请求次数大于200
+    include-names:
+     - restful-api
+     - wxmp-api
+     - api-test
+ # 端点分钟请求次数
+  endpoint_cpm_high_rule:
+    metrics-name: endpoint_cpm
+    op: ">"
+    threshold: 500
+    period: 10
+    count: 2
+    silence-period: 10
+    message: 端点【{name}】在过去10分钟内有超过2分钟的时间，请求次数大于500
+  # jvm监控
+  # old gc次数监控
+  instance_jvm_old_gc_count_rule:
+    metrics-name: instance_jvm_old_gc_count
+    op: ">"
+    threshold: 2
+    period: 10
+    count: 3
+    silence-period: 10
+    message: 实例【{name}】在过去10分钟内有超过3分钟的时间，jvm old gc的次数超过2
+
+webhooks:
+#  - http://127.0.0.1/notify/
+# - http://10.0.2.48:10021/api/monitor/skyWalking/callback/monitorMsg
+

@@ -1,0 +1,9 @@
+FROM docker.io/apache/skywalking-ui:7.0.0
+
+ENV TZ=Asia/Shanghai
+
+EXPOSE 8080
+
+RUN echo $PWD
+
+ENTRYPOINT ["/bin/sh","docker-entrypoint.sh"]

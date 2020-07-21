@@ -1,0 +1,14 @@
+FROM docker.io/apache/skywalking-oap-server:7.0.0-es6
+
+COPY application.yml /skywalking/config/application.yml
+COPY alarm-settings.yml /skywalking/config/alarm-settings.yml
+COPY mysql-connector-java-5.1.47.jar /skywalking/oap-libs/mysql-connector-java-5.1.47.jar
+
+ENV TZ=Asia/Shanghai
+
+EXPOSE 11800
+EXPOSE 12800
+
+RUN echo $PWD
+
+ENTRYPOINT ["/bin/sh","docker-entrypoint.sh"]
